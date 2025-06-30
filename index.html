@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Stride & Co – Toko Sepatu</title>
+  <link rel="stylesheet" href="stylestride.css">
+</head>
+<body>
+
+  <header>
+    <h1>Stride & Co</h1>
+    <p>Langkah Pasti, Gaya Klasik – Diskon 25%!</p>
+  </header>
+
+  <nav>
+    <a href="#" onclick="showPage('home')">Home</a>
+    <a href="#" onclick="showPage('products')">Produk</a>
+    <a href="#" onclick="showPage('cart')">Keranjang</a>
+    <a href="#" onclick="showPage('checkout')">Checkout</a>
+    <a href="#" onclick="showPage('about')">Tentang Kami</a>
+    <a href="#" onclick="showPage('contact')">Kontak</a>
+  </nav>
+
+  <main>
+    <!-- Home -->
+    <section id="home">
+      <h2>Selamat Datang di Stride & Co</h2>
+      <p>Temukan sepatu terbaik untuk aktivitasmu. Mulai dari sneakers hingga formal, semua tersedia!</p>
+      <h3>🎉 Promo Terlaris – Dapatkan diskon hingga 30% untuk produk terlaris!</h3>
+
+      <div class="product-list">
+        <div class="product-item">
+          <img src="poto2.jpg" alt="NovaStride">
+          <h4>NovaStride</h4>
+          <p><s>Rp749.000</s> <strong>Rp524.000</strong></p>
+          <p>Fresh, Ringan, dan Stylish di setiap langkah.</p>
+          <button onclick="addToCart(products[1])">Beli Sekarang</button>
+        </div>
+        <div class="product-item">
+          <img src="poto4.jpg" alt="AeroTone Stride">
+          <h4>AeroTone Stride</h4>
+          <p><s>Rp629.999</s> <strong>Rp510.000</strong></p>
+          <p>Ringan, Dinamis dan Penuh Gaya.</p>
+          <button onclick="addToCart(products[3])">Beli Sekarang</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Produk -->
+    <section id="products" class="hidden">
+      <h2>Daftar Produk</h2>
+      <div class="product-list" id="productList"></div>
+    </section>
+
+    <!-- Detail Produk -->
+    <section id="productDetail" class="hidden">
+      <h2 id="detailTitle"></h2>
+      <img id="detailImage" src="" alt="" style="width:300px;">
+      <p id="detailDesc"></p>
+      <p><strong>Harga: Rp<span id="detailPrice"></span></strong></p>
+      <button onclick="addToCart(currentProduct)">Masukkan ke Keranjang</button>
+      <br><br>
+      <button onclick="showPage('products')">← Kembali</button>
+    </section>
+
+    <!-- Keranjang -->
+    <section id="cart" class="hidden">
+      <h2>Keranjang Belanja</h2>
+      <div id="cartItems"></div>
+      <div class="total">Total: Rp<span id="cartTotal">0</span></div>
+      <br>
+      <button onclick="showPage('checkout')">Checkout Sekarang</button>
+    </section>
+
+    <!-- Checkout -->
+    <section id="checkout" class="hidden">
+      <h2>Checkout</h2>
+      <form onsubmit="submitCheckout(event)">
+        <input type="text" placeholder="Nama Lengkap" required>
+        <input type="text" placeholder="Alamat Lengkap" required>
+        <input type="text" placeholder="No HP / Email" required>
+        <select required>
+          <option disabled selected>Pilih Metode Pembayaran</option>
+          <option>Transfer Bank</option>
+          <option>QRIS</option>
+          <option>COD</option>
+        </select>
+        <br><br>
+        <button type="submit">Bayar Sekarang</button>
+      </form>
+    </section>
+
+    <!-- Tentang Kami -->
+    <section id="about" class="hidden">
+      <h2>Tentang Stride & Co</h2>
+      <p><strong>Stride & Co</strong> adalah merek sepatu lokal yang mengutamakan kenyamanan, desain elegan, dan kualitas terbaik. Kami percaya bahwa setiap langkah Anda mencerminkan gaya hidup Anda.</p>
+      <p>Dengan koleksi sneakers, sepatu formal, dan sport shoes, kami hadir untuk menemani aktivitasmu setiap hari.</p>
+    </section>
+
+    <!-- Kontak -->
+    <section id="contact" class="hidden">
+      <h2>Kontak</h2>
+      <p>Jika Anda memiliki pertanyaan atau ingin bekerja sama dengan kami, silakan hubungi:</p>
+      <p><strong>Email:</strong> <a href="mailto:vivinrumaira@gmail.com">vivinrumaira@gmail.com</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Stride & Co</p>
+  </footer>
+
+  <script>
+    const products = [
+      { id: 1, name: "Stride Classic Black", price: 599000, desc: "Elegan, Simple, Tak lekang oleh waktu.", image: "poto1.jpg" },
+      { id: 2, name: "NovaStride", price: 749000, desc: "Fresh, Ringan, dan Stylish di setiap langkah.", image: "poto2.jpg" },
+      { id: 3, name: "NexaStride", price: 679000, desc: "Satu gaya, untuk semua langkah.", image: "poto3.jpg" },
+      { id: 4, name: "AeroTone Stride", price: 629999, desc: "Ringan, Dinamis dan Penuh Gaya.", image: "poto4.jpg" },
+      { id: 5, name: "Stride Kinetic Soul", price: 499000, desc: "Anggun, Kuat dan Penuh Karakter.", image: "poto5.jpg" },
+      { id: 6, name: "Stride EchoSole", price: 349999, desc: "Simple, Stylish, Siap Melangkah.", image: "poto6.jpg" }
+    ];
+
+    let cart = [];
+    let currentProduct = null;
+
+    function showPage(id) {
+      document.querySelectorAll("main > section").forEach(sec => sec.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+      if (id === "products") renderProducts();
+      if (id === "cart") renderCart();
+    }
+
+    function renderProducts() {
+      const list = document.getElementById("productList");
+      list.innerHTML = "";
+      products.forEach(prod => {
+        list.innerHTML += `
+          <div class="product-item">
+            <img src="${prod.image}" alt="${prod.name}">
+            <h4>${prod.name}</h4>
+            <p>Rp${formatRupiah(prod.price)}</p>
+            <button onclick="showDetail(${prod.id})">Lihat Detail</button>
+          </div>
+        `;
+      });
+    }
+
+    function showDetail(id) {
+      const prod = products.find(p => p.id === id);
+      currentProduct = prod;
+      document.getElementById("detailTitle").textContent = prod.name;
+      document.getElementById("detailImage").src = prod.image;
+      document.getElementById("detailDesc").textContent = prod.desc;
+      document.getElementById("detailPrice").textContent = formatRupiah(prod.price);
+      showPage("productDetail");
+    }
+
+    function addToCart(prod) {
+      const existing = cart.find(item => item.id === prod.id);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ ...prod, qty: 1 });
+      }
+      alert("Produk ditambahkan ke keranjang!");
+    }
+
+    function renderCart() {
+      const div = document.getElementById("cartItems");
+      div.innerHTML = "";
+      let total = 0;
+      cart.forEach(item => {
+        total += item.price * item.qty;
+        div.innerHTML += `
+          <div class="cart-item">
+            <div><img src="${item.image}" alt="${item.name}" style="width:50px;"> ${item.name} (x${item.qty})</div>
+            <div>Rp${formatRupiah(item.price * item.qty)}</div>
+          </div>
+        `;
+      });
+      document.getElementById("cartTotal").textContent = formatRupiah(total);
+    }
+
+    function submitCheckout(event) {
+      event.preventDefault();
+      alert("Terima kasih! Pesanan Anda telah diproses.");
+      cart = [];
+      showPage("home");
+    }
+
+    function formatRupiah(n) {
+      return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    showPage("home");
+  </script>
+
+</body>
+</html>
